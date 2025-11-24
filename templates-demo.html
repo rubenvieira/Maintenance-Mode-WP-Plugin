@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Demos - Maintenance Mode</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f0f1a;
+            color: #fff;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 50px;
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .template-card {
+            background: #1a1a2e;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .template-preview {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .template-info {
+            padding: 20px;
+        }
+
+        .template-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .template-desc {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .view-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Individual template preview styles */
+        .glassmorphic-prev {
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+        }
+
+        .neural-prev {
+            background: #0a0e27;
+            position: relative;
+        }
+
+        .neural-prev::after {
+            content: '●—●—●';
+            color: #667eea;
+            font-size: 2rem;
+            opacity: 0.8;
+        }
+
+        .liquid-prev {
+            background: #0f0817;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .liquid-prev::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(45deg, #667eea, #f093fb);
+            border-radius: 60% 40% 30% 70%;
+            filter: blur(40px);
+            opacity: 0.6;
+        }
+
+        .torus-prev {
+            background: #000;
+        }
+
+        .torus-prev::after {
+            content: '◯';
+            font-size: 4rem;
+            color: #a8edea;
+        }
+
+        .kinetic-prev {
+            background: #1a1a1a;
+        }
+
+        .kinetic-prev::after {
+            content: 'BOLD';
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: 5px;
+        }
+
+        .aurora-prev {
+            background: linear-gradient(180deg, #000a1f 0%, #001f3f 100%);
+        }
+
+        .aurora-prev::after {
+            content: '~';
+            font-size: 5rem;
+            color: #00ff88;
+            text-shadow: 0 0 30px #00ff88;
+        }
+
+        .holographic-prev {
+            background: #000;
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(0, 255, 255, 0.05) 30px);
+        }
+
+        .holographic-prev::after {
+            content: 'HOLO';
+            font-size: 2rem;
+            color: #0ff;
+            text-shadow: 0 0 20px #0ff;
+            letter-spacing: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Maintenance Mode Templates</h1>
+        <p class="subtitle">10 Breathtaking Templates • Interactive & Premium</p>
+
+        <div class="grid">
+            <!-- Glassmorphic -->
+            <div class="template-card">
+                <div class="template-preview glassmorphic-prev"></div>
+                <div class="template-info">
+                    <div class="template-name">Glassmorphic Gradient Mesh</div>
+                    <div class="template-desc">Ultra-modern glassmorphic card with animated gradient mesh background and
+                        floating particles</div>
+                    <a href="#glassmorphic" class="view-btn">View Live Demo</a>
+                </div>
+            </div>
+
+            <!-- Neural -->
+            <div class="template-card">
+                <div class="template-preview neural-prev"></div>
+                <div class="template-info">
+                    <div class="template-name">Neural Network Particles</div>
+                    <div class="template-desc">Interactive canvas-based particle system with neural connections and
+                        mouse tracking</div>
+                    <a href="#neural" class="view-btn">View Live Demo</a>
+                </div>
+            </div>
+
+            <!-- Liquid -->
+            <div class="template-card">
+                <div class="template-preview liquid-prev"></div>
+                <div class="template-info">
+                    <div class="template-name">Liquid Morphing Blobs</div>
+                    <div class="template-desc">Organic fluid animations with morphing gradient blobs in constant motion
+                    </div>
+                    <a href="#liquid" class="view-btn">View Live Demo</a>
+                </div>
+            </div>
+
+            <!-- 3D Torus -->
+            <div class="template-card">
+                <div class="template-preview torus-prev"></div>
+                <div class="template-info">
+                    <div class="template-name">3D Geometric Torus</div>
+                    <div class="template-desc">Three.js powered 3D torus with mouse interactivity and starfield
+                        background</div>
+                    <a href="#torus" class="view-btn">View Live Demo</a>
+                </div>
+            </div>
+
+            <!-- Kinetic -->
+            <div class="template-card">
+                <div class="template-preview kinetic-prev"></div>
+                <div class="template-info">
+                    <div class="template-name">Kinetic Typography</div>
+                    <div class="template-desc">Bold editorial-style typography with letter-by-letter reveal animations
+                    </div>
+                    <a href="#kinetic" class="view-btn">View Live Demo</a>
+                </div>
+            </div>
+
+            <!-- Aurora -->
+            <div class="template-card">
+                <div class="template-preview aurora-prev"></div>
+                <div class="template-info">
+                    <div class="template-name">Aurora Borealis</div>
+                    <div class="template-desc">WebGL shader-based aurora with ethereal color waves and starfield</div>
+                    <a href="#aurora" class="view-btn">View Live Demo</a>
+                </div>
+            </div>
+
+            <!-- Holographic -->
+            <div class="template-card">
+                <div class="template-preview holographic-prev"></div>
+                <div class="template-info">
+                    <div class="template-name">Holographic Interface</div>
+                    <div class="template-desc">Futuristic sci-fi design with holographic effects and glitch animations
+                    </div>
+                    <a href="#holographic" class="view-btn">View Live Demo</a>
+                </div>
+            </div>
+
+            <!-- Original Templates -->
+            <div class="template-card">
+                <div class="template-preview" style="background: #f1f1f1; color: #444;">
+                    <div style="text-align: center;">
+                        <h3 style="font-size: 1.5em; margin-bottom: 10px;">Simple</h3>
+                        <p style="font-size: 0.95rem;">Clean & minimal</p>
+                    </div>
+                </div>
+                <div class="template-info">
+                    <div class="template-name">Simple (Original)</div>
+                    <div class="template-desc">Classic clean design with centered text and minimal styling</div>
+                </div>
+            </div>
+
+            <div class="template-card">
+                <div class="template-preview" style="background: #0a0a0a; color: #00ff00; border: 1px solid #00ff00;">
+                    <div style="text-align: center; font-family: monospace;">
+                        <h3 style="font-size: 1.5em; margin-bottom: 10px;">SYSTEM</h3>
+                        <p>&gt; Online...</p>
+                    </div>
+                </div>
+                <div class="template-info">
+                    <div class="template-name">High-Tech (Original)</div>
+                    <div class="template-desc">Terminal aesthetic with scanlines and glitch effects</div>
+                </div>
+            </div>
+
+            <div class="template-card">
+                <div class="template-preview" style="background: #1a1a1a;">
+                    <div
+                        style="font-size: 2rem; font-weight: bold; background: linear-gradient(90deg, #ff8a00, #e52e71); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        Domain</div>
+                </div>
+                <div class="template-info">
+                    <div class="template-name">Artistic (Original)</div>
+                    <div class="template-desc">3D starfield with animated gradient text using Three.js</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>WordPress Maintenance Mode Plugin • Lumnav © 2024</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">Note: Templates are integrated in the WordPress plugin. This
+                page shows preview cards.</p>
+        </div>
+    </div>
+</body>
+
+</html>
