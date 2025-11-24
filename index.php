@@ -4027,6 +4027,184 @@ function lumnav_mm_admin_and_settings_styles()
                 font-family: 'Courier New', monospace;
             }
 
+            /* Neon Cyberpunk Preview */
+            .neon-preview {
+                background: #0a0a0f;
+                border: 2px solid #ff006e;
+            }
+
+            .neon-preview .neon-text {
+                font-size: 2em;
+                font-weight: 700;
+                color: #fff;
+                text-shadow: 0 0 10px #ff006e, 0 0 20px #ff006e, 0 0 40px #ff006e;
+                animation: neonFlicker 2s infinite;
+            }
+
+            @keyframes neonFlicker {
+
+                0%,
+                100% {
+                    text-shadow: 0 0 10px #ff006e, 0 0 20px #ff006e, 0 0 40px #ff006e;
+                }
+
+                50% {
+                    text-shadow: 0 0 5px #ff006e, 0 0 10px #ff006e;
+                }
+            }
+
+            /* Minimalist Swiss Preview */
+            .swiss-preview {
+                background: #fff;
+                border-left: 3px solid #ff0000;
+            }
+
+            .swiss-preview .swiss-text {
+                font-size: 2.5em;
+                font-weight: 700;
+                color: #000;
+                font-family: 'Helvetica Neue', Arial, sans-serif;
+                letter-spacing: -2px;
+            }
+
+            /* Retro VHS Preview */
+            .vhs-preview {
+                background: #000;
+                border: 3px solid #fff;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .vhs-preview::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.03) 2px, rgba(255, 255, 255, 0.03) 4px);
+            }
+
+            .vhs-preview .vhs-text {
+                font-size: 2em;
+                font-weight: 700;
+                color: #ffd700;
+                font-family: 'Courier New', monospace;
+                position: relative;
+                z-index: 2;
+            }
+
+            /* Brutalist Preview */
+            .brutalist-preview {
+                background: #fff;
+            }
+
+            .brutalist-preview .brutalist-text {
+                font-size: 2.2em;
+                font-weight: 900;
+                color: #000;
+                text-shadow: 4px 4px 0 #000;
+                font-family: Arial, sans-serif;
+            }
+
+            /* Galaxy Preview */
+            .galaxy-preview {
+                background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            }
+
+            .galaxy-preview .galaxy-text {
+                font-size: 2em;
+                font-weight: 700;
+                background: linear-gradient(135deg, #fff, #f093fb, #4facfe);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            /* Matrix Preview */
+            .matrix-preview {
+                background: #000;
+            }
+
+            .matrix-preview .matrix-text {
+                font-size: 2em;
+                font-weight: 700;
+                color: #0f0;
+                text-shadow: 0 0 10px #0f0;
+                font-family: 'Courier New', monospace;
+            }
+
+            /* Vaporwave Preview */
+            .vaporwave-preview {
+                background: linear-gradient(180deg, #ff6ec7, #7873f5, #4facfe);
+            }
+
+            .vaporwave-preview .vaporwave-text {
+                font-size: 2em;
+                font-weight: 700;
+                color: #fff;
+                text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+                letter-spacing: 8px;
+            }
+
+            /* Particle Explosion Preview */
+            .particles-preview {
+                background: #1a1a2e;
+            }
+
+            .particles-preview .particles-text {
+                font-size: 1.8em;
+                font-weight: 900;
+                background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            /* Geometric Preview */
+            .geometric-preview {
+                background: #f5f5f5;
+                border: 2px solid #667eea;
+            }
+
+            .geometric-preview .geometric-text {
+                font-size: 2.5em;
+                font-weight: 800;
+                color: #2d2d2d;
+            }
+
+            /* Glitch Preview */
+            .glitch-preview {
+                background: #000;
+            }
+
+            .glitch-preview .glitch-text {
+                font-size: 2em;
+                font-weight: 700;
+                color: #fff;
+                animation: glitchPreview 3s infinite;
+            }
+
+            @keyframes glitchPreview {
+
+                0%,
+                90%,
+                100% {
+                    color: #fff;
+                    transform: translate(0);
+                }
+
+                92% {
+                    color: #f0f;
+                    transform: translate(-2px, 2px);
+                }
+
+                94% {
+                    color: #0ff;
+                    transform: translate(2px, -2px);
+                }
+            }
+
             @keyframes gradientShift {
                 0% {
                     background-position: 0% 50%;
