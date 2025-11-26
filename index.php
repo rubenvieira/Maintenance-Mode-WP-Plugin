@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: Maintenance Mode
- * Description: A maintenance mode plugin with a simple on/off toggle in the admin bar.
+ * Plugin Name: Landing Pages
+ * Description: A landing page plugin with a simple on/off toggle in the admin bar.
  * Version: 1.0.0
  * Author: Lumnav
  * Author URI: https://lumnav.com
@@ -41,11 +41,11 @@ function lumnav_mm_admin_bar_item($wp_admin_bar)
     $wp_admin_bar->add_node(
         array(
             'id' => 'lumnav-maintenance-mode',
-            'title' => $is_on ? 'Maintenance Mode: ON' : 'Maintenance Mode: OFF',
+            'title' => $is_on ? 'Landing Page: ON' : 'Landing Page: OFF',
             'href' => esc_url($toggle_url),
             'meta' => array(
                 'class' => $is_on ? 'lumnav-mm-on' : 'lumnav-mm-off',
-                'title' => $is_on ? 'Click to disable Maintenance Mode' : 'Click to enable Maintenance Mode',
+                'title' => $is_on ? 'Click to disable Landing Page' : 'Click to enable Landing Page',
             ),
         )
     );
@@ -80,8 +80,8 @@ add_action('admin_init', 'lumnav_mm_toggle_status');
 function lumnav_mm_add_settings_page()
 {
     add_options_page(
-        'Maintenance Mode Settings',
-        'Maintenance Mode',
+        'Landing Page Settings',
+        'Landing Page',
         'manage_options',
         'lumnav-maintenance-mode',
         'lumnav_mm_render_settings_page'
@@ -106,8 +106,8 @@ function lumnav_mm_render_settings_page()
     $current_style = get_option(LUMNAV_MM_STYLE_OPTION, 'simple');
     ?>
     <div class="wrap">
-        <h1>Maintenance Mode Settings</h1>
-        <p>Select the style for your maintenance page. Visitors will see this page when maintenance mode is ON.</p>
+        <h1>Landing Page Settings</h1>
+        <p>Select the style for your landing page. Visitors will see this page when the landing page mode is ON.</p>
         <form method="post" action="options.php">
             <?php settings_fields('lumnav_mm_settings_group'); ?>
             <div class="lumnav-mm-style-grid">
@@ -439,7 +439,9 @@ function lumnav_mm_render_simple_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Under Maintenance</title>
+        <title><?php echo esc_html($domain); ?> - Under Maintenance</title>
+        <meta name="description"
+            content="<?php echo esc_attr($domain); ?> is currently undergoing scheduled maintenance. We will be back shortly.">
         <style>
             * {
                 margin: 0;
@@ -551,15 +553,14 @@ function lumnav_mm_render_simple_page()
         <div class="container">
             <div class="domain"><?php echo esc_html($domain); ?></div>
             <div class="divider"></div>
-            <div class="tagline">Under Maintenance</div>
-            <div class="message">We're performing scheduled maintenance and will be back online shortly.</div>
+            <div class="tagline">Coming Soon</div>
+            <div class="message">This domain is currently under construction. Check back soon!</div>
         </div>
     </body>
 
     </html>
     <?php
 }
-
 
 /**
  * Renders the high-tech maintenance page.
@@ -574,7 +575,9 @@ function lumnav_mm_render_hightech_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>System Maintenance</title>
+        <title><?php echo esc_html($domain); ?> - System Initializing</title>
+        <meta name="description"
+            content="<?php echo esc_attr($domain); ?> system initializing. Establishing secure connection...">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
         <style>
@@ -788,9 +791,9 @@ function lumnav_mm_render_hightech_page()
         <div class="container">
             <div class="border-art">[ SYSTEM ]</div>
             <div class="domain"><?php echo esc_html($domain); ?></div>
-            <div class="status"><span class="prompt">&gt;</span>MAINTENANCE MODE ACTIVE</div>
+            <div class="status"><span class="prompt">&gt;</span>SYSTEM INITIALIZING</div>
             <div class="footer">
-                <div class="typing-effect">Recalibrating systems...</div>
+                <div class="typing-effect">Establishing secure connection...</div>
             </div>
         </div>
     </body>
@@ -812,7 +815,9 @@ function lumnav_mm_render_artistic_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Coming Back Soon</title>
+        <title><?php echo esc_html($domain); ?> - Coming Soon</title>
+        <meta name="description"
+            content="<?php echo esc_attr($domain); ?> is coming soon. Something beautiful is on the horizon.">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap" rel="stylesheet">
         <style>
@@ -979,10 +984,10 @@ function lumnav_mm_render_artistic_page()
             <div class="container">
                 <div class="domain-text"><?php echo esc_html($domain); ?></div>
             </div>
-            <p>Currently down for maintenance. We're crafting something extraordinary.</p>
+            <p>Something beautiful is on the horizon.</p>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-        <script>let scene, camera, renderer, stars, starGeo; let mouseX = 0, mouseY = 0; function init() { scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000); camera.position.z = 1; camera.rotation.x = Math.PI / 2; renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("bg-canvas"), alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight); starGeo = new THREE.BufferGeometry(); const starVertices = []; for (let i = 0; i < 8000; i++) { const x = (Math.random() - .5) * 2000; const y = (Math.random() - .5) * 2000; const z = Math.random() * 2000 - 1000; starVertices.push(x, y, z) } starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3)); let sprite = new THREE.TextureLoader().load('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAB9SURBVDjLY/j//z8DJRgxQAFjRgwYgKWBAQsgKWMlBwYGAwY2MMZkYGBgYGBgYGBgYGBgYGBg/P//PwYGBgY2ENAwbGDgAIIxQzQyMDAwMNz//x9KjPz//z8DGNQvA0M9+P//P5zj//9/GM4wYgACDAAfoQ/x/5k/XwAAAABJRU5ErkJggg=='); let starMaterial = new THREE.PointsMaterial({ color: 16777215, size: 1, map: sprite, transparent: true }); stars = new THREE.Points(starGeo, starMaterial); scene.add(stars); window.addEventListener("resize", onWindowResize, !1); document.addEventListener('mousemove', onMouseMove, !1); animate() } function onWindowResize() { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight) } function onMouseMove(event) { mouseX = event.clientX - window.innerWidth / 2; mouseY = event.clientY - window.innerHeight / 2 } function animate() { starGeo.attributes.position.needsUpdate = !0; stars.rotation.y += 8e-5; stars.rotation.x += 3e-5; if (mouseX !== 0 || mouseY !== 0) { camera.position.x += (-mouseX - camera.position.x) * .00008; camera.position.y += (mouseY - camera.position.y) * .00008; camera.lookAt(scene.position) } renderer.render(scene, camera); requestAnimationFrame(animate) } init();</script>
+        <script>let scene, camera, renderer, stars, starGeo; let mouseX = 0, mouseY = 0; function init() { scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000); camera.position.z = 1; camera.rotation.x = Math.PI / 2; renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("bg-canvas"), alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight); starGeo = new THREE.BufferGeometry(); const starVertices = []; for (let i = 0; i < 8000; i++) { const x = (Math.random() - .5) * 2000; const y = (Math.random() - .5) * 2000; const z = Math.random() * 2000 - 1000; starVertices.push(x, y, z) } starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3)); let sprite = new THREE.TextureLoader().load('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6gAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAB9SURBVDjLY/j//z8DJRgxQAFjRgwYgKWBAQsgKWMlBwYGAwY2MMZkYGBgYGBgYGBgYGBgYGBg/P//PwYGBgY2ENAwbGDgAIIxQzQyMDAwMNz//x9KjPz//z8DGNQvA0M9+P//P5zj//9/GM4wYgACDAAfoQ/x/5k/XwAAAABJRU5ErkJggg=='); let starMaterial = new THREE.PointsMaterial({ color: 16777215, size: 1, map: sprite, transparent: true }); stars = new THREE.Points(starGeo, starMaterial); scene.add(stars); window.addEventListener("resize", onWindowResize, !1); document.addEventListener('mousemove', onMouseMove, !1); animate() } function onWindowResize() { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight) } function onMouseMove(event) { mouseX = event.clientX - window.innerWidth / 2; mouseY = event.clientY - window.innerHeight / 2 } function animate() { starGeo.attributes.position.needsUpdate = !0; stars.rotation.y += 8e-5; stars.rotation.x += 3e-5; if (mouseX !== 0 || mouseY !== 0) { camera.position.x += (-mouseX - camera.position.x) * .00008; camera.position.y += (mouseY - camera.position.y) * .00008; camera.lookAt(scene.position) } renderer.render(scene, camera); requestAnimationFrame(animate) } init();</script>
     </body>
 
     </html>
@@ -1002,7 +1007,8 @@ function lumnav_mm_render_glassmorphic_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Under Maintenance</title>
+        <title><?php echo esc_html($domain); ?> - Coming Soon</title>
+        <meta name="description" content="Future home of <?php echo esc_attr($domain); ?>. We're building something great.">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -1263,9 +1269,8 @@ function lumnav_mm_render_glassmorphic_page()
                         stroke-linejoin="round" opacity="0.8" />
                 </svg></div>
             <div class="domain"><?php echo esc_html($domain); ?></div>
-            <h1>We'll be back soon!</h1>
-            <p>Our site is currently undergoing scheduled maintenance. We're working hard to improve your experience and
-                will be back online shortly.</p>
+            <h1>Future Home</h1>
+            <p>We're working hard to build something amazing. Check back soon!</p>
         </div>
     </body>
 
@@ -1286,7 +1291,8 @@ function lumnav_mm_render_neural_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>System Maintenance</title>
+        <title><?php echo esc_html($domain); ?> - System Initializing</title>
+        <meta name="description" content="<?php echo esc_attr($domain); ?> initializing neural network.">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
@@ -1404,9 +1410,9 @@ function lumnav_mm_render_neural_page()
                 style="font-size:clamp(1rem, 3vw, 1.4rem);font-weight:600;margin-bottom:10px;color:rgba(102,126,234,0.8);text-transform:lowercase;letter-spacing:2px;">
                 <?php echo esc_html($domain); ?>
             </div>
-            <h1>Neural Network Recalibration</h1>
-            <p>Our systems are currently optimizing neural pathways. All services will be restored momentarily.</p>
-            <div class="status-indicator"><span class="status-dot"></span>Processing</div>
+            <h1>Initializing Neural Network</h1>
+            <p>Our systems are currently establishing neural pathways. Launch imminent.</p>
+            <div class="status-indicator"><span class="status-dot"></span>Initializing</div>
         </div>
         <script>const canvas = document.getElementById('canvas'); const ctx = canvas.getContext('2d'); let w, h, particles = [], mouse = { x: null, y: null, radius: 150 }; function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; init() } function init() { particles = []; const count = Math.min(100, Math.floor((w * h) / 15000)); for (let i = 0; i < count; i++) { particles.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - .5) * .5, vy: (Math.random() - .5) * .5, radius: Math.random() * 2 + 1 }) } } class Particle { constructor(obj) { this.x = obj.x; this.y = obj.y; this.vx = obj.vx; this.vy = obj.vy; this.radius = obj.radius } update() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > w) this.vx *= -1; if (this.y < 0 || this.y > h) this.vy *= -1; if (mouse.x !== null) { const dx = this.x - mouse.x; const dy = this.y - mouse.y; const dist = Math.sqrt(dx * dx + dy * dy); if (dist < mouse.radius) { const angle = Math.atan2(dy, dx); const force = ((mouse.radius - dist) / mouse.radius) * 2; this.vx += Math.cos(angle) * force * .1; this.vy += Math.sin(angle) * force * .1 } } this.vx *= .99; this.vy *= .99 } draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = 'rgba(102,126,234,.8)'; ctx.fill() } } function connect() { for (let i = 0; i < particles.length; i++) { for (let j = i + 1; j < particles.length; j++) { const dx = particles[i].x - particles[j].x; const dy = particles[i].y - particles[j].y; const dist = Math.sqrt(dx * dx + dy * dy); if (dist < 120) { ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.strokeStyle = `rgba(118,75,162,${1 - dist / 120})`; ctx.lineWidth = .5; ctx.stroke() } } } } function animate() { ctx.clearRect(0, 0, w, h); particles.forEach((p, i) => { const particle = new Particle(p); particle.update(); particle.draw(); particles[i] = particle }); connect(); requestAnimationFrame(animate) } window.addEventListener('resize', resize); canvas.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY }); canvas.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null }); resize(); animate();</script>
     </body>
@@ -1428,7 +1434,9 @@ function lumnav_mm_render_liquid_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Be Right Back</title>
+        <title><?php echo esc_html($domain); ?> - Be Right Back</title>
+        <meta name="description"
+            content="<?php echo esc_attr($domain); ?> is transforming. Experience something extraordinary when we return.">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;600;800&display=swap"
@@ -1637,7 +1645,9 @@ function lumnav_mm_render_torus_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Maintenance in Progress</title>
+        <title><?php echo esc_html($domain); ?> - Maintenance in Progress</title>
+        <meta name="description"
+            content="<?php echo esc_attr($domain); ?> infrastructure is being enhanced. Please stand by.">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
@@ -1742,7 +1752,9 @@ function lumnav_mm_render_kinetic_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Coming Back Soon</title>
+        <title><?php echo esc_html($domain); ?> - Coming Back Soon</title>
+        <meta name="description"
+            content="<?php echo esc_attr($domain); ?> is upgrading. Pushing boundaries, elevating experiences.">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300&display=swap"
@@ -1931,7 +1943,9 @@ function lumnav_mm_render_aurora_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Maintenance Mode</title>
+        <title><?php echo esc_html($domain); ?> - Maintenance Mode</title>
+        <meta name="description"
+            content="<?php echo esc_attr($domain); ?> is crafting something beautiful. Returning soon.">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
@@ -2013,7 +2027,7 @@ function lumnav_mm_render_aurora_page()
             <p>Like the aurora borealis dancing across the sky, we're crafting something beautiful. Returning soon.</p>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-        <script>let scene, camera, renderer, aurora; function init() {
+        <script>let scene, camera, renderer, aurora; fun                               ction init() {
                 scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, .1, 1000); camera.position.z = 2; renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas-aurora'), alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight); const starGeo = new THREE.BufferGeometry(); const starVerts = []; for (let i = 0; i < 1000; i++) { const x = (Math.random() - .5) * 100; const y = (Math.random() - .5) * 100; const z = (Math.random() - .5) * 100; starVerts.push(x, y, z) } starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starVerts, 3)); const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: .05, transparent: true, opacity: .8 }); const stars = new THREE.Points(starGeo, starMat); scene.add(stars); const shaderMaterial = new THREE.ShaderMaterial({
                     uniforms: { time: { value: 0 }, color1: { value: new THREE.Color(0x00ff88) }, color2: { value: new THREE.Color(0x0088ff) }, color3: { value: new THREE.Color(0xff00ff) } }, vertexShader: `
             varying vec2 vUv;
@@ -2059,7 +2073,9 @@ function lumnav_mm_render_holographic_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>System Update</title>
+        <title><?php echo esc_html($domain); ?> - System Update</title>
+        <meta name="description"
+            content="<?php echo esc_attr($domain); ?> holographic interface recalibration in progress.">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
@@ -2250,7 +2266,8 @@ function lumnav_mm_render_neon_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Temporarily Offline</title>
+        <title><?php echo esc_html($domain); ?> - Coming Soon</title>
+        <meta name="description" content="<?php echo esc_attr($domain); ?> is coming soon. We'll be back shortly.">
         <link href="https://fonts.googleapis.com/css2?family=Teko:wght@700&display=swap" rel="stylesheet">
         <style>
             * {
@@ -2389,11 +2406,10 @@ function lumnav_mm_render_neon_page()
 
     <body>
         <div class="cityscape"></div>
-        <div class="neon-border"></div>
-        <div class="neon-container">
-            <div class="domain"><?php echo esc_html($domain); ?></div>
-            <div class="subtitle">TEMPORARILY OFFLINE</div>
-            <div class="message">System recalibration in progress. We'll be back shortly.</div>
+        <div class="content">
+            <div class="domain" data-text="<?php echo esc_attr($domain); ?>"><?php echo esc_html($domain); ?></div>
+            <div class="status">COMING SOON</div>
+            <div class="message">WE ARE CURRENTLY BUILDING SOMETHING AMAZING</div>
         </div>
     </body>
 
@@ -2414,7 +2430,9 @@ function lumnav_mm_render_swiss_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Offline</title>
+        <title><?php echo esc_html($domain); ?> - In Development</title>
+        <meta name="description"
+            content="<?php echo esc_attr($domain); ?> is in development. Our service will resume shortly.">
         <style>
             * {
                 margin: 0;
@@ -2529,16 +2547,11 @@ function lumnav_mm_render_swiss_page()
     </head>
 
     <body>
-        <div class="container">
-            <div class="red-line"></div>
-            <div class="grid-numbers">47.22°N / 8.53°E</div>
+        <div class="grid-bg"></div>
+        <div class="content">
             <div class="domain"><?php echo esc_html($domain); ?></div>
-            <div class="message-block">
-                <div class="status">Status / Offline</div>
-                <div class="detail">We are performing essential updates to improve your experience. Our service will resume
-                    shortly.</div>
-            </div>
-            <div class="footer">EST. RETURN: SOON</div>
+            <div class="status">Status / In Development</div>
+            <div class="message">We are currently updating our platform. Please check back later.</div>
         </div>
     </body>
 
@@ -2559,7 +2572,8 @@ function lumnav_mm_render_vhs_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>No Signal</title>
+        <title><?php echo esc_html($domain); ?> - Loading</title>
+        <meta name="description" content="<?php echo esc_attr($domain); ?> initializing... please stand by.">
         <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
         <style>
             * {
@@ -2753,15 +2767,12 @@ function lumnav_mm_render_vhs_page()
     </head>
 
     <body>
-        <div class="static"></div>
+        <div class="static-noise"></div>
         <div class="scanlines"></div>
         <div class="content">
-            <div class="timestamp">23:59:59</div>
-            <div class="vhs-border">
-                <div class="domain"><?php echo esc_html($domain); ?></div>
-                <div class="status-bar"><span class="indicator"></span>PAUSE</div>
-                <div class="message">TRACKING... PLEASE STAND BY</div>
-            </div>
+            <div class="domain"><?php echo esc_html($domain); ?></div>
+            <div class="status">LOADING</div>
+            <div class="message">INITIALIZING...</div>
         </div>
     </body>
 
@@ -2782,7 +2793,8 @@ function lumnav_mm_render_brutalist_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Offline</title>
+        <title><?php echo esc_html($domain); ?> - Loading</title>
+        <meta name="description" content="<?php echo esc_attr($domain); ?> is loading. Services temporarily unavailable.">
         <style>
             * {
                 margin: 0;
@@ -2856,13 +2868,10 @@ function lumnav_mm_render_brutalist_page()
     </head>
 
     <body>
-        <div class="container">
+        <div class="content">
             <div class="domain"><?php echo esc_html($domain); ?></div>
-            <div class="status-block">
-                <div class="status">Offline</div>
-                <div class="detail">System maintenance in progress. Services temporarily unavailable.</div>
-            </div>
-            <div class="timestamp"><?php echo date('H:i'); ?></div>
+            <div class="status">LOADING</div>
+            <div class="message">SYSTEM UPGRADE IN PROGRESS</div>
         </div>
     </body>
 
@@ -2883,7 +2892,8 @@ function lumnav_mm_render_galaxy_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Cosmic Maintenance</title>
+        <title><?php echo esc_html($domain); ?> - A New Universe</title>
+        <meta name="description" content="<?php echo esc_attr($domain); ?> is exploring new frontiers. Launching soon.">
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
         <style>
             * {
@@ -3087,7 +3097,8 @@ function lumnav_mm_render_matrix_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>System Update</title>
+        <title><?php echo esc_html($domain); ?> - System Boot</title>
+        <meta name="description" content="<?php echo esc_attr($domain); ?> system boot sequence initiated.">
         <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
         <style>
             * {
@@ -3201,8 +3212,8 @@ function lumnav_mm_render_matrix_page()
     <body><canvas id="matrix"></canvas>
         <div class="content">
             <div class="domain"><?php echo esc_html($domain); ?></div>
-            <div class="status">SYSTEM UPGRADE<span class="cursor"></span></div>
-            <div class="message">Recalibrating matrix parameters...</div>
+            <div class="status">SYSTEM BOOT<span class="cursor"></span></div>
+            <div class="message">Initializing matrix parameters...</div>
         </div>
         <script>const canvas = document.getElementById('matrix'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight; const chars = '01'; const fontSize = 14; const columns = canvas.width / fontSize; const drops = []; for (let i = 0; i < columns; i++) { drops[i] = 1 } function draw() { ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = '#0F0'; ctx.font = fontSize + 'px monospace'; for (let i = 0; i < drops.length; i++) { const text = chars[Math.floor(Math.random() * chars.length)]; ctx.fillText(text, i * fontSize, drops[i] * fontSize); if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) { drops[i] = 0 } drops[i]++ } } setInterval(draw, 33);</script>
     </body>
@@ -3224,7 +3235,8 @@ function lumnav_mm_render_vaporwave_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Aesthetic</title>
+        <title><?php echo esc_html($domain); ?> - Coming Soon</title>
+        <meta name="description" content="<?php echo esc_attr($domain); ?> is coming soon.">
         <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&display=swap" rel="stylesheet">
         <style>
             * {
@@ -3366,7 +3378,8 @@ function lumnav_mm_render_particles_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Loading</title>
+        <title><?php echo esc_html($domain); ?> - Initializing</title>
+        <meta name="description" content="<?php echo esc_attr($domain); ?> initializing systems...">
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap" rel="stylesheet">
         <style>
             * {
@@ -3508,7 +3521,8 @@ function lumnav_mm_render_geometric_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Reconfiguring</title>
+        <title><?php echo esc_html($domain); ?> - Constructing</title>
+        <meta name="description" content="<?php echo esc_attr($domain); ?> constructing architecture...">
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@800&display=swap" rel="stylesheet">
         <style>
             * {
@@ -3652,7 +3666,7 @@ function lumnav_mm_render_geometric_page()
             </svg></div>
         <div class="content">
             <div class="domain"><?php echo esc_html($domain); ?></div>
-            <div class="message">Restructuring architecture...</div>
+            <div class="message">Constructing architecture...</div>
         </div>
     </body>
 
@@ -3673,7 +3687,8 @@ function lumnav_mm_render_glitch_page()
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Error</title>
+        <title><?php echo esc_html($domain); ?> - Coming Soon</title>
+        <meta name="description" content="<?php echo esc_attr($domain); ?> is coming soon.">
         <link href="https://fonts.googleapis.com/css2?family=Rubik+Glitch&display=swap" rel="stylesheet">
         <style>
             * {
@@ -3916,8 +3931,8 @@ function lumnav_mm_render_glitch_page()
         <div class="noise"></div>
         <div class="content">
             <div class="domain" data-text="<?php echo esc_attr($domain); ?>"><?php echo esc_html($domain); ?></div>
-            <div class="status">SYSTEM CORRUPTION DETECTED</div>
-            <div class="message">Reconstructing data...</div>
+            <div class="status">COMING SOON</div>
+            <div class="message">DATA INCOMING...</div>
         </div>
     </body>
 
