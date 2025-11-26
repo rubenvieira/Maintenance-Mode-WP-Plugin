@@ -6,7 +6,7 @@
  * Checks for new releases and integrates with WordPress's native update system.
  * 
  * @author Lumnav
- * @version 1.0.3
+ * @version 1.0.0
  */
 
 if (!defined('ABSPATH')) {
@@ -184,6 +184,10 @@ class GitHub_Updater
 
         // Update the result to point to the correct location
         $result['destination'] = $proper_destination;
+
+        // Clear plugin cache so WordPress reads the new version
+        wp_cache_delete('plugins', 'plugins');
+        delete_site_transient('update_plugins');
 
         // Reactivate the plugin if it was active before
         if ($this->active) {
