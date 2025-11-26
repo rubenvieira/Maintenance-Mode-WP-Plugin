@@ -18,7 +18,7 @@ define('LUMNAV_MM_STYLE_OPTION', 'lumnav_maintenance_mode_style');
 
 // GitHub Auto-Update Configuration
 // TODO: Update these values with your actual GitHub repository details
-define('LUMNAV_GITHUB_USERNAME', 'rubenvieira'); // Change to your GitHub username or organization
+define('LUMNAV_GITHUB_USERNAME', 'Lumnav'); // Change to your GitHub username or organization
 define('LUMNAV_GITHUB_REPO', 'Maintenance-Mode-WP-Plugin'); // Change to your repository name
 
 // Initialize GitHub Auto-Updater
