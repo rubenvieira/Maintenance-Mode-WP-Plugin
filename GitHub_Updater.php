@@ -100,6 +100,9 @@ class GitHub_Updater
                 'new_version' => $github_version,
                 'url' => $this->plugin['PluginURI'],
                 'package' => $this->github_response->zipball_url,
+                'requires' => '5.0',
+                'tested' => '6.8',
+                'requires_php' => '7.0',
             );
 
             $transient->response[$this->basename] = (object) $plugin;
