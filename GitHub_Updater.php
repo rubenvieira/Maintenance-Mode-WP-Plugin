@@ -201,6 +201,9 @@ class GitHub_Updater
             wp_clean_plugins_cache(true);
         }
 
+        // Purge Nginx Helper cache if active
+        do_action('rt_nginx_helper_purge_all');
+
         // Reactivate the plugin if it was active before
         if ($this->active) {
             activate_plugin($this->basename);
