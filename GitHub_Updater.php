@@ -6,7 +6,7 @@
  * Checks for new releases and integrates with WordPress's native update system.
  * 
  * @author Lumnav
- * @version 1.0.15
+ * @version 1.0.16
  */
 
 if (!defined('ABSPATH')) {
@@ -54,9 +54,6 @@ class GitHub_Updater
             }
         }
 
-        // DEBUG: Log the plugin data to a file
-        file_put_contents(dirname($this->file) . '/debug.log', print_r($this->plugin, true), FILE_APPEND);
-
         $this->basename = plugin_basename($this->file);
         $this->active = is_plugin_active($this->basename);
         $this->username = $username;
@@ -91,6 +88,40 @@ class GitHub_Updater
 
             $this->github_response = json_decode(wp_remote_retrieve_body($response));
         }
+    }
+
+    /**
+     * Parse readme.txt file
+     */
+    private function parse_readme()
+    {
+        $readme_file = dirname($this->file) . '/readme.txt';
+
+        if (!file_exists($readme_file)) {
+            return array();
+        }
+
+        $readme_content = file_get_contents($readme_file);
+        $sections = array();
+
+        // Parse sections using regex
+        if (preg_match('/== Description ==\s*(.+?)(?=\s*==|$)/s', $readme_content, $matches)) {
+            $sections['Description'] = trim($matches[1]);
+        }
+
+        if (preg_match('/== Installation ==\s*(.+?)(?=\s*==|$)/s', $readme_content, $matches)) {
+            $sections['Installation'] = trim($matches[1]);
+        }
+
+        if (preg_match('/== Changelog ==\s*(.+?)(?=\s*==|$)/s', $readme_content, $matches)) {
+            $sections['Changelog'] = trim($matches[1]);
+        }
+
+        if (preg_match('/== Frequently Asked Questions ==\s*(.+?)(?=\s*==|$)/s', $readme_content, $matches)) {
+            $sections['FAQ'] = trim($matches[1]);
+        }
+
+        return $sections;
     }
 
     /**
@@ -178,9 +209,9 @@ class GitHub_Updater
                     'last_updated' => $this->github_response->published_at,
                     'homepage' => $this->plugin['PluginURI'],
                     'short_description' => $this->plugin['Description'],
-                    'sections' => array(
-                        'Description' => $this->plugin['Description'],
-                        'Updates' => $this->github_response->body,
+                    'sections' => array_merge(
+                        $this->parse_readme(),
+                        array('Updates' => $this->github_response->body)
                     ),
                     'download_link' => $this->github_response->zipball_url,
                     'requires' => $this->plugin['RequiresWP'],
