@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Landing Pages
  * Description: A landing page plugin with a simple on/off toggle in the admin bar.
- * Version: 1.0.12
+ * Version: 1.0.13
  * Author: Lumnav
  * Author URI: https://lumnav.com
  * License: GPL-2.0+
