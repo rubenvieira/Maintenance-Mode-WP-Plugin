@@ -7,7 +7,7 @@
  * Author URI: https://lumnav.com
  * License: GPL-2.0+
  * Requires at least: 5.0
- * Tested up to: 6.8.3
+ * Tested up to: 6.9
  * Requires PHP: 7.0
  */
 
