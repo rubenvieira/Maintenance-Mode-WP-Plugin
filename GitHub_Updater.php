@@ -73,6 +73,14 @@ class GitHub_Updater
     }
 
     /**
+     * Log debug messages
+     */
+    private function log($message)
+    {
+        error_log('[GitHub Updater] ' . $message);
+    }
+
+    /**
      * Modify the plugin transient to include GitHub updates
      */
     public function modify_transient($transient)
@@ -93,6 +101,9 @@ class GitHub_Updater
 
         $out_of_date = version_compare($github_version, $current_version, 'gt');
 
+        // Debug logging
+        $this->log("Checking update: Current: $current_version, Remote: $github_version, Out of date: " . ($out_of_date ? 'Yes' : 'No'));
+
         if ($out_of_date) {
             $plugin = array(
                 'slug' => current(explode('/', $this->basename)),
@@ -109,6 +120,7 @@ class GitHub_Updater
         } else {
             // Remove from updates if we're at the latest version
             if (isset($transient->response[$this->basename])) {
+                $this->log("Removing stale update notification for " . $this->basename);
                 unset($transient->response[$this->basename]);
             }
         }
@@ -169,6 +181,8 @@ class GitHub_Updater
     {
         global $wp_filesystem;
 
+        $this->log("Starting after_install hook");
+
         // Get the plugin directory name (e.g., "Maintenance Mode")
         $plugin_dir = dirname($this->file);
         $plugin_folder = basename($plugin_dir);
@@ -190,6 +204,13 @@ class GitHub_Updater
         // Update the result to point to the correct location
         $result['destination'] = $proper_destination;
 
+        // Invalidate OPCache to ensure PHP sees the new files immediately
+        if (function_exists('opcache_invalidate')) {
+            $this->log("Invalidating OPCache for " . $this->file);
+            opcache_invalidate($this->file, true);
+            opcache_invalidate($proper_destination . '/index.php', true);
+        }
+
         // Clear all plugin-related caches
         wp_cache_delete('plugins', 'plugins');
 
@@ -202,12 +223,18 @@ class GitHub_Updater
         }
 
         // Purge Nginx Helper cache if active
-        do_action('rt_nginx_helper_purge_all');
+        if (has_action('rt_nginx_helper_purge_all')) {
+            $this->log("Purging Nginx Helper cache");
+            do_action('rt_nginx_helper_purge_all');
+        }
 
         // Reactivate the plugin if it was active before
         if ($this->active) {
+            $this->log("Reactivating plugin");
             activate_plugin($this->basename);
         }
+
+        $this->log("Update completed successfully");
 
         return $result;
     }
