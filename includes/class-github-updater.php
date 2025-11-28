@@ -7,7 +7,7 @@
  * 
  * @package Landing_Pages
  * @author Lumnav
- * @version 1.0.16
+ * @version 1.0.17
  */
 
 if (!defined('ABSPATH')) {
@@ -19,6 +19,7 @@ class Lumnav_GitHub_Updater
     private $file;
     private $plugin;
     private $basename;
+    private $slug;
     private $active;
     private $username;
     private $repository;
@@ -26,36 +27,33 @@ class Lumnav_GitHub_Updater
     private $github_response;
 
     /**
-     * Initialize the updater
-     * 
-     * @param string $file Plugin file path (__FILE__)
-     * @param string $username GitHub username or organization
-     * @param string $repository GitHub repository name
-     * @param string $authorize_token Optional GitHub personal access token for private repos
+     * Initialize updater
      */
     public function __construct($file, $username, $repository, $authorize_token = '')
     {
         $this->file = $file;
+
         if (!function_exists('get_plugin_data')) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
+
         $this->plugin = get_plugin_data($this->file);
 
-        // Explicitly fetch headers that might be missing from get_plugin_data
+        // Extra headers
         $extra_headers = get_file_data($this->file, array(
             'TestedUpTo' => 'Tested up to',
             'RequiresWP' => 'Requires at least',
             'RequiresPHP' => 'Requires PHP',
         ));
 
-        // Merge extra headers, prioritizing existing non-empty values
         foreach ($extra_headers as $key => $value) {
-            if (empty($this->plugin[$key]) && !empty($value)) {
+            if (!empty($value)) {
                 $this->plugin[$key] = $value;
             }
         }
 
         $this->basename = plugin_basename($this->file);
+        $this->slug = current(explode('/', $this->basename)); // IMPORTANT FIX
         $this->active = is_plugin_active($this->basename);
         $this->username = $username;
         $this->repository = $repository;
@@ -67,32 +65,35 @@ class Lumnav_GitHub_Updater
     }
 
     /**
-     * Get information from GitHub API
+     * GitHub API call
      */
     private function get_repository_info()
     {
-        if (is_null($this->github_response)) {
-            $request_uri = sprintf('https://api.github.com/repos/%s/%s/releases/latest', $this->username, $this->repository);
-
-            $args = array();
-            if ($this->authorize_token) {
-                $args['headers'] = array(
-                    'Authorization' => "token {$this->authorize_token}"
-                );
-            }
-
-            $response = wp_remote_get($request_uri, $args);
-
-            if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
-                return false;
-            }
-
-            $this->github_response = json_decode(wp_remote_retrieve_body($response));
+        if (!is_null($this->github_response)) {
+            return;
         }
+
+        $request_uri = sprintf('https://api.github.com/repos/%s/%s/releases/latest', $this->username, $this->repository);
+
+        $args = array();
+        if ($this->authorize_token) {
+            $args['headers'] = array(
+                'Authorization' => "token {$this->authorize_token}",
+            );
+        }
+
+        $response = wp_remote_get($request_uri, $args);
+
+        if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
+            $this->github_response = false;
+            return;
+        }
+
+        $this->github_response = json_decode(wp_remote_retrieve_body($response));
     }
 
     /**
-     * Parse readme.txt file
+     * Parse readme.txt sections
      */
     private function parse_readme()
     {
@@ -102,39 +103,32 @@ class Lumnav_GitHub_Updater
             return array();
         }
 
-        $readme_content = file_get_contents($readme_file);
+        $content = file_get_contents($readme_file);
         $sections = array();
 
-        // Parse sections using regex
-        if (preg_match('/== Description ==\s*(.+?)(?=\s*==|$)/s', $readme_content, $matches)) {
-            $sections['Description'] = trim($matches[1]);
+        if (preg_match('/== Description ==\s*(.+?)(?=\s*==|$)/s', $content, $m)) {
+            $sections['Description'] = trim($m[1]);
         }
-
-        if (preg_match('/== Installation ==\s*(.+?)(?=\s*==|$)/s', $readme_content, $matches)) {
-            $sections['Installation'] = trim($matches[1]);
+        if (preg_match('/== Installation ==\s*(.+?)(?=\s*==|$)/s', $content, $m)) {
+            $sections['Installation'] = trim($m[1]);
         }
-
-        if (preg_match('/== Changelog ==\s*(.+?)(?=\s*==|$)/s', $readme_content, $matches)) {
-            $sections['Changelog'] = trim($matches[1]);
+        if (preg_match('/== Changelog ==\s*(.+?)(?=\s*==|$)/s', $content, $m)) {
+            $sections['Changelog'] = trim($m[1]);
         }
-
-        if (preg_match('/== Frequently Asked Questions ==\s*(.+?)(?=\s*==|$)/s', $readme_content, $matches)) {
-            $sections['FAQ'] = trim($matches[1]);
+        if (preg_match('/== Frequently Asked Questions ==\s*(.+?)(?=\s*==|$)/s', $content, $m)) {
+            $sections['FAQ'] = trim($m[1]);
         }
 
         return $sections;
     }
 
-    /**
-     * Log debug messages
-     */
-    private function log($message)
+    private function log($msg)
     {
-        error_log('[GitHub Updater] ' . $message);
+        error_log("[GitHub Updater] " . $msg);
     }
 
     /**
-     * Modify the plugin transient to include GitHub updates
+     * Inject update info into WP updater
      */
     public function modify_transient($transient)
     {
@@ -148,18 +142,13 @@ class Lumnav_GitHub_Updater
             return $transient;
         }
 
-        // Strip 'v' prefix from tag if present (e.g., v1.0.1 -> 1.0.1)
         $github_version = ltrim($this->github_response->tag_name, 'v');
         $current_version = $this->plugin['Version'];
 
-        $out_of_date = version_compare($github_version, $current_version, 'gt');
+        if (version_compare($github_version, $current_version, 'gt')) {
 
-        // Debug logging
-        $this->log("Checking update: Current: $current_version, Remote: $github_version, Out of date: " . ($out_of_date ? 'Yes' : 'No'));
-
-        if ($out_of_date) {
             $plugin = array(
-                'slug' => current(explode('/', $this->basename)),
+                'slug' => $this->slug,
                 'plugin' => $this->basename,
                 'new_version' => $github_version,
                 'url' => $this->plugin['PluginURI'],
@@ -170,130 +159,85 @@ class Lumnav_GitHub_Updater
             );
 
             $transient->response[$this->basename] = (object) $plugin;
-        } else {
-            // Remove from updates if we're at the latest version
-            if (isset($transient->response[$this->basename])) {
-                $this->log("Removing stale update notification for " . $this->basename);
-                unset($transient->response[$this->basename]);
-            }
         }
 
         return $transient;
     }
 
     /**
-     * Provide plugin information for the update popup
+     * Plugin details modal popup (critical for description!)
      */
     public function plugin_popup($result, $action, $args)
     {
-        if ($action !== 'plugin_information') {
+        if ($action !== 'plugin_information' || empty($args->slug)) {
             return $result;
         }
 
-        if (!empty($args->slug)) {
-            if ($args->slug == current(explode('/', $this->basename))) {
-                $this->get_repository_info();
-
-                if ($this->github_response === false || !isset($this->github_response->tag_name)) {
-                    return $result;
-                }
-
-                // Strip 'v' prefix from tag if present
-                $github_version = ltrim($this->github_response->tag_name, 'v');
-
-                $plugin = array(
-                    'name' => $this->plugin['Name'],
-                    'slug' => $this->basename,
-                    'version' => $github_version,
-                    'author' => $this->plugin['AuthorName'],
-                    'author_profile' => $this->plugin['AuthorURI'],
-                    'last_updated' => $this->github_response->published_at,
-                    'homepage' => $this->plugin['PluginURI'],
-                    'short_description' => $this->plugin['Description'],
-                    'sections' => array_merge(
-                        $this->parse_readme(),
-                        array('Updates' => $this->github_response->body)
-                    ),
-                    'download_link' => $this->github_response->zipball_url,
-                    'requires' => $this->plugin['RequiresWP'],
-                    'tested' => $this->plugin['TestedUpTo'],
-                    'requires_php' => $this->plugin['RequiresPHP'],
-                );
-
-                return (object) $plugin;
-            }
+        // Must match the slug WordPress requests
+        if ($args->slug !== $this->slug) {
+            return $result;
         }
 
-        return $result;
+        $this->get_repository_info();
+
+        if ($this->github_response === false) {
+            return $result;
+        }
+
+        $github_version = ltrim($this->github_response->tag_name, 'v');
+
+        $plugin = array(
+            'name' => $this->plugin['Name'],
+            'slug' => $this->slug,  // ✔ FIXED — MUST MATCH WP REQUEST
+            'version' => $github_version,
+            'author' => $this->plugin['AuthorName'],
+            'author_profile' => $this->plugin['AuthorURI'],
+            'last_updated' => $this->github_response->published_at,
+            'homepage' => $this->plugin['PluginURI'],
+            'short_description' => $this->plugin['Description'],
+            'sections' => array_merge(
+                $this->parse_readme(),
+                array('Updates' => $this->github_response->body)
+            ),
+            'download_link' => $this->github_response->zipball_url,
+            'requires' => $this->plugin['RequiresWP'],
+            'tested' => $this->plugin['TestedUpTo'],
+            'requires_php' => $this->plugin['RequiresPHP'],
+        );
+
+        return (object) $plugin;
     }
 
     /**
-     * Ensure proper folder structure after update
+     * Fix folder names + finalize install
      */
     public function after_install($response, $hook_extra, $result)
     {
         global $wp_filesystem;
 
-        $this->log("Starting after_install hook");
-
-        // Get the plugin directory name
         $plugin_dir = dirname($this->file);
         $plugin_folder = basename($plugin_dir);
 
-        // The destination where WordPress extracted the update
         $destination = $result['destination'];
-
-        // WordPress expects the folder to be named correctly
         $proper_destination = dirname($destination) . '/' . $plugin_folder;
 
-        // Remove old plugin directory if it exists
         if ($wp_filesystem->exists($proper_destination)) {
             $wp_filesystem->delete($proper_destination, true);
         }
 
-        // Move the extracted folder to the proper location
         $wp_filesystem->move($destination, $proper_destination);
-
-        // Update the result to point to the correct location
         $result['destination'] = $proper_destination;
 
-        // Invalidate OPCache to ensure PHP sees the new files immediately
         if (function_exists('opcache_invalidate')) {
-            $this->log("Invalidating OPCache for " . $this->file);
             opcache_invalidate($this->file, true);
-            opcache_invalidate($proper_destination . '/landing-pages.php', true);
         }
 
-        // Clear all plugin-related caches
-        wp_cache_delete('plugins', 'plugins');
-
-        // Clear the update transient
-        delete_site_transient('update_plugins');
-
-        // Force WordPress to refresh plugin data
-        if (function_exists('wp_clean_plugins_cache')) {
-            wp_clean_plugins_cache(true);
-        }
-
-        // Purge Nginx Helper cache if active
-        if (has_action('rt_nginx_helper_purge_all')) {
-            $this->log("Purging Nginx Helper cache");
-            do_action('rt_nginx_helper_purge_all');
-        }
-
-        // Reactivate the plugin if it was active before
         if ($this->active) {
-            $this->log("Reactivating plugin");
             activate_plugin($this->basename);
         }
 
-        // Reload plugin data from the new file
-        if (file_exists($this->file)) {
-            $this->plugin = get_plugin_data($this->file);
-            $this->log("Reloaded plugin data. New version in memory: " . $this->plugin['Version']);
-        }
-
-        $this->log("Update completed successfully");
+        delete_site_transient('update_plugins');
+        wp_clean_plugins_cache(true);
 
         return $result;
     }
